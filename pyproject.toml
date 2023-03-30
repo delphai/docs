@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "delphai-api"
+version = "1.0.0"
+description = "Models and documentation for Delphai's public API"
+authors = ["Anton Ryzhov <anton@delphai.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.95.0"
+uvicorn = {version = "^0.21.1", extras = ["standard"]}
+bson = "^0.5.10"
+fastapi-camelcase = "^1.0.5"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^6.0.0"
+pep8-naming = "^0.13.3"
+poethepoet = "^0.19.0"
+black = "^23.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+format = "black ."
+start = "poetry run uvicorn delphai_api:app --reload"
+test = "poetry run pytest"
+
+[tool.pytest.ini_options]
+addopts = "-p no:warnings"
+filterwarnings = [
+  "error"
+]
