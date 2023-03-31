@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from urllib.parse import urlsplit
 
+from .companies import routes as companies_routes
 from .utils import include_responses
 
 app = FastAPI(
@@ -35,3 +36,5 @@ async def set_root_path(request: Request, call_next):
 
 
 include_responses(app)
+
+app.include_router(companies_routes.router, prefix="/v1/companies")
