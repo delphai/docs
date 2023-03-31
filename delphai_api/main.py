@@ -1,8 +1,19 @@
 from fastapi import FastAPI, Request
 from urllib.parse import urlsplit
 
+from .utils import include_responses
 
-app = FastAPI(title="Delphai API")
+app = FastAPI(
+    title="Delphai API",
+    docs_url="/",
+    redoc_url=None,
+    swagger_ui_oauth2_redirect_url="/oauth2-redirect",
+    servers=[
+        {"url": "https://api.delphai.com", "description": "Production environment"},
+    ],
+    root_path_in_servers=False,
+    swagger_ui_init_oauth={"clientId": "delphai-api"},
+)
 
 
 @app.middleware("http")
@@ -21,3 +32,6 @@ async def set_root_path(request: Request, call_next):
             request.scope["root_path"] = original_path.removesuffix(path)
 
     return await call_next(request)
+
+
+include_responses(app)
