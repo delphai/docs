@@ -23,5 +23,5 @@ class Location(CamelModel):
     latitude: Optional[float] = Field(example=52.5167)
     longitude: Optional[float] = Field(example=13.3833)
     zip_code: Optional[str] = Field(
-        description="Company address (zip code)", example="10999"
+        description="Company address (ZIP code)", example="10999"
     )

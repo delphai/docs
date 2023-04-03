@@ -38,7 +38,7 @@ class CompanyDescription(CamelModel):
 
 class CompanyRevenue(CamelModel):
     currency: Optional[str] = Field(
-        description="currency of revenue number", example="EUR"
+        description="Currency of revenue number", example="EUR"
     )
     annual: Optional[int] = Field(
         description="Annual revenue number for specified year", example=5000000
@@ -47,7 +47,7 @@ class CompanyRevenue(CamelModel):
 
 class Company(CamelModel):
     id: ObjectId = Field(..., description="Internal company ID")
-    name: str = Field(..., description="Name of the company", example="Delphai")
+    name: str = Field(..., description="Name of the company", example="delphai")
     url: str = Field(..., description="Webpage of the company", example="delphai.com")
     descriptions: Optional[Dict[str, CompanyDescription]]
     founding_year: Optional[int] = Field(description="Founding year", example=2020)
