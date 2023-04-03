@@ -118,19 +118,17 @@ class NewsArticles(CamelModel):
     total: int = Field(..., description="Number of results")
 
 
-class JobPosting(CamelModel):
+class JobPost(CamelModel):
     company_id: ObjectId = Field(..., description="Internal company ID")
-    url: str = Field(..., description="Job posting URL")
+    url: str = Field(..., description="Job post URL")
     published: datetime = Field(..., description="When the job post was published")
     location: Optional[str] = Field(description="Location of the position")
     job_description: Optional[str] = Field(description="Description of the position")
-    language: Optional[str] = Field(description="Original language of the job posting")
+    language: Optional[str] = Field(description="Original language of the job post")
     title: str = Field(..., description="Position title")
-    added: datetime = Field(
-        ..., description="When the job posting was added to delphai"
-    )
+    added: datetime = Field(..., description="When the job post was added to delphai")
 
 
-class JobPostings(CamelModel):
-    results: List[JobPosting]
+class JobPosts(CamelModel):
+    results: List[JobPost]
     total: int = Field(..., description="Number of results")

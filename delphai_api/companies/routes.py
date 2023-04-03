@@ -10,7 +10,7 @@ from .models import (
     CompaniesSearchResults,
     Company,
     CompanyPeers,
-    JobPostings,
+    JobPosts,
     NewsArticles,
 )
 
@@ -41,7 +41,6 @@ async def list_company_peers(
 ) -> Dict[str, Any]:
     """
     Returns top peers of specified company\n
-    Example: /peers/{id}[?limit]
     """
 
 
@@ -56,20 +55,20 @@ async def list_news_articles(
     To filter by creation date, a comparison option can be used.\n
     Options: greater than (gt), less than (lt), greater than or equal (gte),
     less than or equal (lte)\n
-    Example: /articles?added[gt]=2022-09-15T15:53:00Z
+    Example: ?added[gt]=2022-09-15T15:53:00Z
     """
 
 
-@router.get("/{companyId}/job-postings", response_model=JobPostings)
-async def list_job_postings(
+@router.get("/{companyId}/job-posts", response_model=JobPosts)
+async def list_job_posts(
     companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
     created: Dict[str, datetime] = AddedField,
     limit_offset: Tuple[int, int] = LimitOffset(),
 ) -> Dict[str, Any]:
     """
-    Lists all job postings from a company or filtered by creation date.\n
+    Lists all job posts from a company or filtered by creation date.\n
     To filter by creation date, a comparison option can be used.\n
     Options: greater than (gt), less than (lt), greater than or equal (gte),
     less than or equal (lte)\n
-    Example: /job_postings?added[gt]=2022-09-15T15:53:00Z
+    Example: ?added[gt]=2022-09-15T15:53:00Z
     """
