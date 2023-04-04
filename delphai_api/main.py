@@ -20,6 +20,7 @@ DESCRIPTION = """
 app = FastAPI(
     title="delphai API",
     description=DESCRIPTION,
+    version="1.0",
     docs_url="/",
     redoc_url=None,
     swagger_ui_oauth2_redirect_url="/oauth2-redirect",
