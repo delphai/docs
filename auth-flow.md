@@ -1,8 +1,8 @@
 # Overview
 
-The delphai API utilises the [OAuth 2.0](https://oauth.net/2/) protocol to authorize requests. The API uses __password credentials flow__ to authenticate users, and the tokens endpoint is located at https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token. The client ID for the API is `delphai-api`.
+The delphai API utilises the [OAuth 2.0](https://oauth.net/2/) protocol to authorize requests. The API uses [Resource Owner Password Credentials Grant](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) to authenticate users, and the tokens endpoint is located at https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token. The client ID for the API is `delphai-api`.
 
-<sub><sup>To extend the refresh token lifetime, it is recommended to request the `offline_access` scope.</sup></sub>
+If you're going to use refresh tokens, a permanent refresh token could be requested with `offline_access` scope. Otherwise its lifetime is one week.
 
 The token should be passed following the [Bearer Authentication scheme](https://swagger.io/docs/specification/authentication/bearer-authentication/) in the Authorization HTTP header.
 
@@ -188,14 +188,15 @@ public class DelphaiAPI {
 
 ### cURL
 ```
+USERNAME="demo"
+PASSWORD="demo"
+
 # Authenticate and get access token
-curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
--d "grant_type=password&client_id=delphai-api&username=demo&password=demo" \
-"https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token"
+TOKEN="$(curl -X POST --data "grant_type=password&client_id=delphai-api&username=$USERNAME&password=$PASSWORD" \
+"https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token" | jq --raw-output ".access_token")"
 
 # Authenticate API request
-curl -H "Authorization: Bearer [access_token]" \
-"https://api.delphai.com/v1/companies/5c7fe4f53807d86e3a9e47cf"
+curl -H "Authorization: Bearer $TOKEN" "https://api.delphai.com/v1/companies/5c7fe4f53807d86e3a9e47cf"
 ```
 
 ### Postman configuration example
