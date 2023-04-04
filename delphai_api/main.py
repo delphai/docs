@@ -5,7 +5,7 @@ from .companies import routes as companies_routes
 from .utils import include_responses
 
 app = FastAPI(
-    title="Delphai API",
+    title="delphai API",
     docs_url="/",
     redoc_url=None,
     swagger_ui_oauth2_redirect_url="/oauth2-redirect",
