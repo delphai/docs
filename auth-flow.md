@@ -188,11 +188,11 @@ public class DelphaiAPI {
 
 ### cURL
 ```bash
-USERNAME="demo"
-PASSWORD="demo"
+DELPHAI_USERNAME="demo"
+DELPHAI_PASSWORD="demo"
 
 # Authenticate and get access token
-TOKEN="$(curl -X POST --data "grant_type=password&client_id=delphai-api&username=$USERNAME&password=$PASSWORD" \
+TOKEN="$(curl -X POST --data "grant_type=password&client_id=delphai-api&username=$DELPHAI_USERNAME&password=$DELPHAI_PASSWORD" \
 "https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token" | jq --raw-output ".access_token")"
 
 # Authenticate API request
