@@ -1,0 +1,11 @@
+# Define ports exposed by the deployment (as k8s Service)
+ports:
+  http:
+    enabled: true
+    port: 8000
+
+# Enable Ingress
+ingress:
+  enabled: true
+  subdomain: '{{ regexReplaceAll "^delphai-api" $.Release.Name "docs" }}'
+  urlPrefix: "/"
