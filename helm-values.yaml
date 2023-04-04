@@ -7,5 +7,5 @@ ports:
 # Enable Ingress
 ingress:
   enabled: true
-  subdomain: '{{ regexReplaceAll "^delphai-api" $.Release.Name "docs" }}'
+  subdomain: '{{ $.Release.Name }}'
   urlPrefix: "/"
