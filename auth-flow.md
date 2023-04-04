@@ -1,8 +1,8 @@
 # Overview
 
-The delphai API utilises the [OAuth 2.0](https://oauth.net/2/) protocol to authorize requests. The API uses __password credentials flow__ to authenticate users, and the tokens endpoint is located at https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token. The client ID for the API is `delphai-api`.
+The delphai API utilises the [OAuth 2.0](https://oauth.net/2/) protocol to authorize requests. The API uses [Resource Owner Password Credentials Grant](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) to authenticate users, and the tokens endpoint is located at https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token. The client ID for the API is `delphai-api`.
 
-<sub><sup>To extend the refresh token lifetime, it is recommended to request the `offline_access` scope.</sup></sub>
+If you're going to use refresh tokens, a permanent refresh token could be requested with `offline_access` scope. Otherwise its lifetime is one week.
 
 The token should be passed following the [Bearer Authentication scheme](https://swagger.io/docs/specification/authentication/bearer-authentication/) in the Authorization HTTP header.
 
@@ -13,7 +13,7 @@ The token should be passed following the [Bearer Authentication scheme](https://
 In the following examples, the `client_secret` parameter is not needed as the API is using __password credentials flow__ to authenticate. The username and password parameters are set to _demo_ for demonstration purposes.
 
 ### Python with requests
-```
+```python
 import requests
 
 # Authenticate and get access token
@@ -40,7 +40,7 @@ print(response.json())
 ```
 
 ### Python with oauthlib
-```
+```python
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 
@@ -63,7 +63,7 @@ print(response.json())
 ```
 
 ### TypeScript with simple-oauth2
-```
+```typescript
 import { create } from 'simple-oauth2';
 import axios from 'axios';
 
@@ -88,7 +88,7 @@ async function main() {
       password: 'demo',
       scope: 'offline_access',
     });
-    
+
     // Authenticate API request
     const apiUrl = "https://api.delphai.com/v1/companies/5c7fe4f53807d86e3a9e47cf";
     const headers = { "Authorization": `Bearer ${token.access_token}` };
@@ -103,7 +103,7 @@ main();
 ```
 
 ### Java with the `org.apache.httpcomponents` and `com.nimbusds` libraries
-```
+```java
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
@@ -187,15 +187,16 @@ public class DelphaiAPI {
 ```
 
 ### cURL
-```
+```bash
+USERNAME="demo"
+PASSWORD="demo"
+
 # Authenticate and get access token
-curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
--d "grant_type=password&client_id=delphai-api&username=demo&password=demo" \
-"https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token"
+TOKEN="$(curl -X POST --data "grant_type=password&client_id=delphai-api&username=$USERNAME&password=$PASSWORD" \
+"https://auth.delphai.com/auth/realms/delphai/protocol/openid-connect/token" | jq --raw-output ".access_token")"
 
 # Authenticate API request
-curl -H "Authorization: Bearer [access_token]" \
-"https://api.delphai.com/v1/companies/5c7fe4f53807d86e3a9e47cf"
+curl -H "Authorization: Bearer $TOKEN" "https://api.delphai.com/v1/companies/5c7fe4f53807d86e3a9e47cf"
 ```
 
 ### Postman configuration example
