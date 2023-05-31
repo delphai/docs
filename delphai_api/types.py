@@ -66,7 +66,7 @@ AddedField = subfields(
 )
 
 
-def LimitOffset(limit_default=300, limit_max=300):  # noqa: N802
+def LimitOffset(limit_default=20, limit_max=300):  # noqa: N802
     @Depends
     def get_limit_offset(
         limit: int = Query(
