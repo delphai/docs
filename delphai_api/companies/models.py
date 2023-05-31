@@ -56,7 +56,7 @@ class Company(CamelModel):
     additional_urls: Optional[Dict[str, str]] = Field(
         example={"linkedin": "https://www.linkedin.com/company/delphai"}
     )
-    Companyrevenue: Optional[Dict[str, CompanyRevenue]] = Field(
+    revenue: Optional[Dict[str, CompanyRevenue]] = Field(
         description="Company revenue with currency"
     )
     products: Optional[List[str]] = Field(
