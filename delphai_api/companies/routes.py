@@ -1,20 +1,21 @@
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
+from delphai_fastapi.auth import Authorization
+from delphai_fastapi.companies.models import (
+    Company,
+    CompaniesSearchResults,
+    CompanyPeers,
+)
+from delphai_fastapi.job_posts.models import JobPosts
+from delphai_fastapi.news_articles.models import NewsArticles
+from delphai_fastapi.types import LimitOffset, ObjectId
 from fastapi import APIRouter, Path, Query
 
-from ..auth import OAuth2Token
-from ..types import AddedField, LimitOffset, ObjectId, Tuple
+from ..types import AddedField
 
-from .models import (
-    CompaniesSearchResults,
-    Company,
-    CompanyPeers,
-    JobPosts,
-    NewsArticles,
-)
 
-router = APIRouter(tags=["Companies"], dependencies=[OAuth2Token])
+router = APIRouter(tags=["Companies"], dependencies=[Authorization])
 
 
 @router.get("", response_model=CompaniesSearchResults)
