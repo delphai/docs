@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from delphai_fastapi.auth import Authorization
 from delphai_fastapi.companies.models import (
@@ -12,7 +12,7 @@ from delphai_fastapi.news_articles.models import NewsArticles
 from delphai_fastapi.types import LimitOffset, ObjectId
 from fastapi import APIRouter, Path, Query
 
-from ..types import AddedField
+from ..types import AddedField, EmployeeCountField, HeadquartersField, Ownership
 
 
 router = APIRouter(tags=["Companies"], dependencies=[Authorization])
@@ -39,9 +39,18 @@ async def get_company_profile(
 async def list_company_peers(
     companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
     limit_offset: Tuple[int, int] = LimitOffset(limit_default=5, limit_max=50),
+    headquarters: Dict[str, str] = HeadquartersField,
+    employee_count: Dict[str, int] = EmployeeCountField,
+    ownership: Optional[Ownership] = Query(default="", example="private"),
 ) -> Dict[str, Any]:
     """
-    Returns top peers of specified company\n
+    Returns top peers of specified company.\n
+    To filter by headquarters, one of the option can be used.\n
+    Options: continent, country, state, city\n
+    Example: ?headquarters[country]=Germany\n
+    To filter by employee count, a comparison option can be used.\n
+    Options: greater than or equal (gte), less than or equal (lte)\n
+    Example: ?employeeCount[gte]=500
     """
 
 

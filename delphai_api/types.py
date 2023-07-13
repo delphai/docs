@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from fastapi import Query, Depends, Request
 from fastapi.exceptions import RequestValidationError
@@ -39,3 +40,26 @@ AddedField = subfields(
     ["gt", "gte", "lt", "lte"],
     example="2022-09-15T15:53:00Z",
 )
+
+
+HeadquartersField = subfields(
+    "headquarters",
+    Optional[str],
+    ["continent", "country", "state", "city"],
+    description="Headquarters filter. Available options: continent, country, state, city.",  # noqa E501
+    example="[country]=Germany",
+)
+
+
+EmployeeCountField = subfields(
+    "employeeCount",
+    Optional[int],
+    ["gte", "lte"],
+    description="Employee count filter. Available options: gte, lte",
+    example="[gte]=500",
+)
+
+
+class Ownership(str, Enum):
+    PRIVATE = "private"
+    PUBLIC = "public"
