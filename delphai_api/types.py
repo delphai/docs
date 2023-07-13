@@ -46,7 +46,7 @@ HeadquartersField = subfields(
     "headquarters",
     Optional[str],
     ["continent", "country", "state", "city"],
-    description="Headquarters filter. Available options: continent, country, state, city.",
+    description="Headquarters filter. Available options: continent, country, state, city.",  # noqa
     example="[country]=Germany",
 )
 
