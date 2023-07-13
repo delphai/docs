@@ -1,5 +1,5 @@
 from datetime import datetime
-import enum
+from enum import Enum
 
 from fastapi import Query, Depends, Request
 from fastapi.exceptions import RequestValidationError
@@ -60,6 +60,6 @@ EmployeeCountField = subfields(
 )
 
 
-class Ownership(str, enum):
+class Ownership(str, Enum):
     PRIVATE = "private"
     PUBLIC = "public"
