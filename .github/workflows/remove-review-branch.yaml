@@ -10,15 +10,7 @@ jobs:
 
     steps:
       - name: Make slug variables
-        uses: rlespinasse/github-slug-action@v3.x
-
-      - name: Load Actions config
-        id: config
-        uses: yumemi-inc/action-config@v0.1.0
-        with:
-          repository: "delphai/.github"
-          github-token: ${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
-          mask-variables: false
+        uses: rlespinasse/github-slug-action@v4.x
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -27,26 +19,30 @@ jobs:
           allow-no-subscriptions: true
 
       - name: Login to AKS
-        run: az aks get-credentials ${{ steps.config.outputs.AKS_GET_CREDENTIALS_REVIEW }}
+        run: az aks get-credentials ${{ vars.AKS_GET_CREDENTIALS_REVIEW }}
 
       - name: Setup Helm
         uses: azure/setup-helm@v3
         with:
           version: "v3.10.1"
 
-      - name: Generate Helm deployment name
+      - name: Generate Helm release name
         run: |
           # Use `_SLUG_URL` variants to pass Helm validation
 
-          DEPLOYMENT_NAME="$GITHUB_REPOSITORY_NAME_PART_SLUG_URL-$GITHUB_EVENT_REF_SLUG_URL"
-
-          # Ensure name length https://github.com/helm/helm/issues/6006#issuecomment-553184466
-          HELM_MAX_DEPLOYMENT_NAME_LENGTH=53_
-          if [ "${#DEPLOYMENT_NAME}" -gt "$HELM_MAX_DEPLOYMENT_NAME_LENGTH" ]; then
-              DEPLOYMENT_NAME="$(echo "$DEPLOYMENT_NAME" | cut --characters -44)-$(echo "$DEPLOYMENT_NAME" | md5sum | cut --characters -8)"
+          RELEASE_NAME="$GITHUB_REPOSITORY_NAME_PART_SLUG_URL"
+          if [ "$GITHUB_EVENT_REF" != "${{ github.event.repository.default_branch }}" ]
+          then
+            RELEASE_NAME="$RELEASE_NAME-${{ env.GITHUB_EVENT_REF_SLUG_URL }}"
           fi
 
-          echo "DEPLOYMENT_NAME=$DEPLOYMENT_NAME" >> $GITHUB_ENV
+          # Ensure name length https://github.com/helm/helm/issues/6006#issuecomment-553184466
+          HELM_MAX_RELEASE_NAME_LENGTH=53
+          if [ "${#RELEASE_NAME}" -gt "$HELM_MAX_RELEASE_NAME_LENGTH" ]; then
+              RELEASE_NAME="$(echo "$RELEASE_NAME" | cut --characters -44)-$(echo "$RELEASE_NAME" | md5sum | cut --characters -8)"
+          fi
+
+          echo "RELEASE_NAME=$RELEASE_NAME" >> "$GITHUB_ENV"
 
       - run: |
-          helm uninstall --namespace "$GITHUB_REPOSITORY_NAME_PART_SLUG_URL" "$DEPLOYMENT_NAME" || true
+          helm uninstall --namespace "$GITHUB_REPOSITORY_NAME_PART_SLUG_URL" "$RELEASE_NAME" || true

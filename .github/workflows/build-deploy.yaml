@@ -33,15 +33,6 @@ jobs:
             exit 1
           fi
 
-      - name: Load Actions config
-        id: config
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
-        run: |
-          curl --silent --header "Authorization: Bearer $GITHUB_TOKEN" \
-            "https://api.github.com/repos/delphai/.github/contents/actions-config.txt" \
-              | jq --raw-output '.content' | base64 --decode >> "$GITHUB_OUTPUT"
-
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -50,7 +41,7 @@ jobs:
 
       - name: Login to ACR
         env:
-          ACR_NAME: ${{ steps.config.outputs.ACR_NAME }}
+          ACR_NAME: ${{ vars.ACR_NAME }}
         run: az acr login --name "$ACR_NAME"
 
       - name: Pull the source code
@@ -61,6 +52,8 @@ jobs:
           echo >> .dockerignore
           echo .git >> .dockerignore
           echo .github >> .dockerignore
+          echo Dockerfile >> .dockerignore
+          echo helm-values.yaml >> .dockerignore
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -75,7 +68,8 @@ jobs:
         env:
           COMMIT_SHA: ${{ github.event.after || github.sha }}
           BRANCH_NAME: ${{ (github.event.pull_request.merged && github.base_ref) || github.head_ref || github.ref_name }}
-          IMAGE_NAME: "${{ steps.config.outputs.ACR_REGISTRY }}/${{ github.event.repository.name }}"
+          IMAGE_NAME: "${{ vars.ACR_REGISTRY }}/${{ github.event.repository.name }}"
+          GITHUB_TOKEN: "${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}"
 
         run: |
           echo "commit_sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
@@ -137,9 +131,11 @@ jobs:
           (IFS=$'\n'; echo "${BUILD_TAGS[*]}") >> "$GITHUB_ENV"
           echo "EOF" >> "$GITHUB_ENV"
 
-          echo 'SSH_KNOWN_HOSTS<<EOF' >> "$GITHUB_ENV"
-          cat ~/.ssh/known_hosts >> "$GITHUB_ENV"
-          echo 'EOF' >> "$GITHUB_ENV"
+          echo "SSH_KNOWN_HOSTS_FILE=$HOME/.ssh/known_hosts" >> "$GITHUB_ENV"
+
+          echo "@delphai:registry=https://npm.pkg.github.com" >> "$HOME/.npmrc"
+          echo "//npm.pkg.github.com/:_authToken=$GITHUB_TOKEN" >> "$HOME/.npmrc"
+          echo "NPMRC_FILE=$HOME/.npmrc" >> "$GITHUB_ENV"
 
       - name: Build and push image
         id: build-and-push
@@ -149,12 +145,13 @@ jobs:
 
           build-args: |
             CI=true
-            SSH_KNOWN_HOSTS=${{ env.SSH_KNOWN_HOSTS }}
-            GITHUB_TOKEN=${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
-            SSH_PRIVATE_KEY=${{ secrets.SSH_KEY }}
 
           secrets: |
             GITHUB_TOKEN=${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
+
+          secret-files: |
+            SSH_KNOWN_HOSTS=${{ env.SSH_KNOWN_HOSTS_FILE }}
+            NPMRC=${{ env.NPMRC_FILE }}
 
           ssh: default=${{ env.SSH_AUTH_SOCK }}
 
@@ -177,7 +174,7 @@ jobs:
         run: |
           cat <<'EOF' >> "$GITHUB_STEP_SUMMARY"
           <details>
-          <summary>Pushed docker images</summary>
+          <summary>Assigned labels</summary>
 
           ```
           ${{ env.BUILD_TAGS }}
@@ -185,7 +182,7 @@ jobs:
           </details>
 
           ```bash
-          az acr login --name "${{ steps.config.outputs.ACR_NAME }}"
+          az acr login --name "${{ vars.ACR_NAME }}"
           docker pull "${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}"
           ```
           EOF
@@ -214,15 +211,6 @@ jobs:
       - name: Make slug variables
         uses: rlespinasse/github-slug-action@v4.x
 
-      - name: Load Actions config
-        id: config
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEVOPS_BOT_GITHUB_TOKEN }}
-        run: |
-          curl --silent --header "Authorization: Bearer $GITHUB_TOKEN" \
-            "https://api.github.com/repos/delphai/.github/contents/actions-config.txt" \
-              | jq --raw-output '.content' | base64 --decode >> "$GITHUB_OUTPUT"
-
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -230,7 +218,7 @@ jobs:
           allow-no-subscriptions: true
 
       - name: Login to AKS
-        run: az aks get-credentials ${{ steps.config.outputs[format('AKS_GET_CREDENTIALS_{0}', matrix.environment)] }}
+        run: az aks get-credentials ${{ vars[format('AKS_GET_CREDENTIALS_{0}', matrix.environment)] }}
 
       - name: Setup Helm
         uses: azure/setup-helm@v3
@@ -259,7 +247,7 @@ jobs:
         env:
           COMMIT_TIMESTAMP: ${{ needs.build.outputs.commit_timestamp }}
           BRANCH_NAME: ${{ needs.build.outputs.branch_name }}
-          HELM_REPOSITORY_URL: ${{ steps.config.outputs.HELM_REPOSITORY_URL }}
+          HELM_REPOSITORY_URL: ${{ vars.HELM_REPOSITORY_URL }}
           HELM_CHART_NAME: "delphai-deployment"
           HELM_VALUES_BASE64: ${{ needs.build.outputs.helm_values_base64 }}
 
