@@ -1,6 +1,7 @@
+import enum
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
-from fastapi_camelcase import CamelModel
 from pydantic import Field
 from delphai_fastapi.auth import Authorization
 from delphai_fastapi.companies.models import (
@@ -19,14 +20,14 @@ from ..types import AddedField, EmployeeCountField, HeadquartersField, Ownership
 router = APIRouter(tags=["Companies"], dependencies=[Authorization])
 
 
-class CustomAttribute(CamelModel):
-    name: str = Field(description="Attribute name")
-    values: Any = Field(description="Attribute values")
+class CompanyInclude(str, enum.Enum):
+    CUSTOM_ATTRIBUTES = "customAttributes"
 
 
 class Company(Company):
-    custom_attributes: Optional[List[CustomAttribute]] = Field(
-        description="Company custom attributes"
+    custom_attributes: Optional[Dict[str, Any]] = Field(
+        description="Company custom attributes",
+        example={"crmId": 84831, "labels": ["Partner", "Supplier"]},
     )
 
 
@@ -42,8 +43,8 @@ async def search_companies(
 
 @router.get("/{companyId}", response_model=Company)
 async def get_company_profile(
-    id: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
-    include: List[str] = Query([]),
+    companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
+    include: List[CompanyInclude] = Query([]),
 ) -> Dict[str, Any]:
     ...
 
