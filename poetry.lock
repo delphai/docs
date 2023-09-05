@@ -119,13 +119,13 @@ files = [
 
 [[package]]
 name = "delphai-fastapi"
-version = "1.0.2"
+version = "1.0.4"
 description = "Package for fastAPI models"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "delphai_fastapi-1.0.2-py3-none-any.whl", hash = "sha256:ea0b2c792aa071b3fdeb214c272529f9a5896f93da4760d71e88e906f1a65830"},
-    {file = "delphai_fastapi-1.0.2.tar.gz", hash = "sha256:9d22d2e4037e680c1ec7ceea4bf71b00990e141333773f4d7429442672fdd283"},
+    {file = "delphai_fastapi-1.0.4-py3-none-any.whl", hash = "sha256:59471745392356f35b49267568813c62aa7677014f911dd52db804f5089495a0"},
+    {file = "delphai_fastapi-1.0.4.tar.gz", hash = "sha256:1fc2c949533dd9099409940c88ca59c85959845622d5486330fb34137a17911e"},
 ]
 
 [package.dependencies]

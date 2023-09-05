@@ -4,8 +4,10 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 from delphai_fastapi.auth import Authorization
 from delphai_fastapi.companies.models import (
-    Company,
     CompaniesSearchResults,
+    Company,
+    CompanyCustomAttributes,
+    CompanyCustomAttributesUpdate,
     CompanyPeers,
 )
 from delphai_fastapi.job_posts.models import JobPosts
@@ -37,6 +39,21 @@ async def search_companies(
 async def get_company_profile(
     companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
     include: List[CompanyInclude] = Query([]),
+) -> Dict[str, Any]:
+    ...
+
+
+@router.get("/{companyId}/custom-attributes", response_model=CompanyCustomAttributes)
+async def get_company_custom_attributes(
+    companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
+) -> Dict[str, Any]:
+    ...
+
+
+@router.patch("/{companyId}/custom-attributes", response_model=CompanyCustomAttributes)
+async def update_company_custom_attributes(
+    custom_attributes: CompanyCustomAttributesUpdate,
+    companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
 ) -> Dict[str, Any]:
     ...
 
