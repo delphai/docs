@@ -2,7 +2,6 @@ import enum
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
-from pydantic import Field
 from delphai_fastapi.auth import Authorization
 from delphai_fastapi.companies.models import (
     Company,
