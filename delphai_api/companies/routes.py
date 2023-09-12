@@ -24,13 +24,6 @@ class CompanyInclude(str, enum.Enum):
     CUSTOM_ATTRIBUTES = "customAttributes"
 
 
-class Company(Company):
-    custom_attributes: Optional[Dict[str, Any]] = Field(
-        description="Company custom attributes",
-        example={"crmId": 84831, "labels": ["Partner", "Supplier"]},
-    )
-
-
 @router.get("", response_model=CompaniesSearchResults)
 async def search_companies(
     query: str = Query(..., description="Query"),
