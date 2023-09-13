@@ -2,7 +2,6 @@ import enum
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
-from pydantic import Field
 from delphai_fastapi.auth import Authorization
 from delphai_fastapi.companies.models import (
     Company,
@@ -22,13 +21,6 @@ router = APIRouter(tags=["Companies"], dependencies=[Authorization])
 
 class CompanyInclude(str, enum.Enum):
     CUSTOM_ATTRIBUTES = "customAttributes"
-
-
-class Company(Company):
-    custom_attributes: Optional[Dict[str, Any]] = Field(
-        description="Company custom attributes",
-        example={"crmId": 84831, "labels": ["Partner", "Supplier"]},
-    )
 
 
 @router.get("", response_model=CompaniesSearchResults)
