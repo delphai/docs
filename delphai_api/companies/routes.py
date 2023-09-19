@@ -28,6 +28,7 @@ class CompanyInclude(str, enum.Enum):
 @router.get("", response_model=CompaniesSearchResults)
 async def search_companies(
     query: str = Query(..., description="Query"),
+    url: Optional[str] = Query(None, description="Get company by url"),
     limit_offset: Tuple[int, int] = LimitOffset(),
 ) -> Dict[str, Any]:
     """
