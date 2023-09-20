@@ -29,6 +29,22 @@ class CompanyInclude(str, enum.Enum):
 async def search_companies(
     query: Optional[str] = Query(None, description="Search query"),
     url: Optional[str] = Query(None, description="Get company by url"),
+    name: Optional[str] = Query(None, description="Get company by name"),
+    headquarters_country: Optional[str] = Query(
+        None, description="Get company by country", alias="headquarters.country"
+    ),
+    headquarters_city: Optional[str] = Query(
+        None, description="Get company by city", alias="headquarters.city"
+    ),
+    founding_year: Optional[int] = Query(
+        None, description="Get company by founding year", alias="foundingYear"
+    ),
+    industries: Optional[List[str]] = Query(
+        None, description="Get company by similar industries"
+    ),
+    products: Optional[List[str]] = Query(
+        None, description="Get company by similar products"
+    ),
     limit_offset: Tuple[int, int] = LimitOffset(),
 ) -> Dict[str, Any]:
     """
