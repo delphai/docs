@@ -37,9 +37,9 @@ jobs:
           fi
 
           # Ensure name length https://github.com/helm/helm/issues/6006#issuecomment-553184466
-          HELM_MAX_RELEASE_NAME_LENGTH=53
+          HELM_MAX_RELEASE_NAME_LENGTH=39
           if [ "${#RELEASE_NAME}" -gt "$HELM_MAX_RELEASE_NAME_LENGTH" ]; then
-              RELEASE_NAME="$(echo "$RELEASE_NAME" | cut --characters -44)-$(echo "$RELEASE_NAME" | md5sum | cut --characters -8)"
+              RELEASE_NAME="$(echo "$RELEASE_NAME" | cut --characters -30)-$(echo "$RELEASE_NAME" | md5sum | cut --characters -8)"
           fi
 
           echo "RELEASE_NAME=$RELEASE_NAME" >> "$GITHUB_ENV"
