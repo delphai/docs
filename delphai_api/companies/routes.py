@@ -1,7 +1,7 @@
 import enum
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Annotated, Any, Dict, List, Optional, Tuple
 from delphai_fastapi.auth import Authorization
 from delphai_fastapi.companies.models import (
     CompaniesSearchResults,
@@ -99,6 +99,7 @@ async def list_news_articles(
     companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
     created: Dict[str, datetime] = AddedField,
     limit_offset: Tuple[int, int] = LimitOffset(),
+    sortBy: Annotated[List[str], Query()] = [],  # noqa: N803
 ) -> Dict[str, Any]:
     """
     Lists all news articles from a company or filtered by creation date.\n
@@ -114,6 +115,7 @@ async def list_job_posts(
     companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
     created: Dict[str, datetime] = AddedField,
     limit_offset: Tuple[int, int] = LimitOffset(),
+    sortBy: Annotated[List[str], Query()] = [],  # noqa: N803
 ) -> Dict[str, Any]:
     """
     Lists all job posts from a company or filtered by creation date.\n
