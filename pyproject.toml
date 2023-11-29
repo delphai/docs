@@ -5,12 +5,12 @@ description = "Models and documentation for Delphai's public API"
 authors = ["Anton Ryzhov <anton@delphai.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "~3.9"
 fastapi = "^0"
 uvicorn = {version = "^0.21.1", extras = ["standard"]}
 bson = "^0.5.10"
 fastapi-camelcase = "^1.0.5"
-delphai-fastapi = "^1.0.2"
+delphai-fastapi = "^2.1.1"
 pydantic = "^1.9.0"
 
 [tool.poetry.dev-dependencies]
