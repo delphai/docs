@@ -12,6 +12,7 @@ from delphai_fastapi.companies.models import (
 )
 from delphai_fastapi.job_posts.models import JobPosts
 from delphai_fastapi.news_articles.models import NewsArticles
+from delphai_fastapi.funding_rounds.models import FundingRounds
 from delphai_fastapi.types import LimitOffset, ObjectId
 from fastapi import APIRouter, Path, Query
 
@@ -123,4 +124,15 @@ async def list_job_posts(
     Options: greater than (gt), less than (lt), greater than or equal (gte),
     less than or equal (lte)\n
     Example: ?added[gt]=2022-09-15T15:53:00Z
+    """
+
+
+@router.get("/{companyId}/funding-rounds", response_model=FundingRounds)
+async def get_funding_rounds(
+    companyId: ObjectId = Path(..., description="Internal company ID"),  # noqa: N803
+    limit_offset: tuple[int, int] = LimitOffset(),
+    sortBy: Annotated[List[str], Query()] = [],  # noqa: N803
+) -> Dict[str, Any]:
+    """
+    Lists all funding rounds of specified company.\n
     """
